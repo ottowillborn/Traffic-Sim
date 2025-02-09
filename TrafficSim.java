@@ -4,9 +4,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class TrafficSim {
-    private static Timer timer;
+    private static Timer mainTimer;
+    private static Timer trafficLightTimer;
+    private static Timer yellowLightTimer;
     static ArrayList<Car> cars = new ArrayList<>();
-    static ArrayList<TrafficLight> trafficLights = new ArrayList<>();
+    static TrafficLight[] trafficLights = new TrafficLight[4];
 
     public static void main(String[] args) {
         GridDisplay display = new GridDisplay();
@@ -15,10 +17,12 @@ public class TrafficSim {
         TrafficLight EBLight = new TrafficLight(12, 12, "W");
         TrafficLight SBLight = new TrafficLight(12, 7, "N");
         TrafficLight WBLight = new TrafficLight(7, 7, "E");
-        trafficLights.add(NBLight);
-        trafficLights.add(EBLight);
-        trafficLights.add(SBLight);
-        trafficLights.add(WBLight);
+        NBLight.changeLight(LightColor.GREEN);
+        SBLight.changeLight(LightColor.GREEN);
+        trafficLights[0] = NBLight;
+        trafficLights[1] = EBLight;
+        trafficLights[2] = SBLight;
+        trafficLights[3] = WBLight;
         for (TrafficLight light : trafficLights) {
             display.updateLightCell(light);
         }
@@ -45,11 +49,10 @@ public class TrafficSim {
     public static void startSimulation(GridDisplay display) {
         System.out.println("Starting sim!");
 
-        // Set up the timer
-        timer = new Timer(1000, new ActionListener() {
+        // Timer for cars
+        mainTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 // Handle car movement
                 for (Car car : cars) {
                     if (car.isMoving()) {
@@ -61,7 +64,57 @@ public class TrafficSim {
             }
         });
 
-        // Start the timer
-        timer.start();
+        // Timer for traffic Lights
+        trafficLightTimer = new Timer(8000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToYellow();
+                updateLights(display);
+            }
+        });
+
+        // Timer for switching from yellow to red after 2 seconds
+        yellowLightTimer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchToRedAndGreen();
+                updateLights(display);
+            }
+        });
+
+        // Start the timers
+        trafficLightTimer.start();
+        mainTimer.start();
+    }
+
+    // Method to switch green lights to yellow
+    public static void switchToYellow() {
+        for (TrafficLight light : trafficLights) {
+            if (light.color == LightColor.GREEN) {
+                light.color = LightColor.YELLOW;
+            }
+        }
+        yellowLightTimer.start();
+        trafficLightTimer.stop();
+    }
+
+    // Method to switch yellow lights to red and others to green
+    private static void switchToRedAndGreen() {
+        for (TrafficLight light : trafficLights) {
+            if (light.color == LightColor.YELLOW) {
+                light.color = LightColor.RED;
+            } else {
+                light.color = LightColor.GREEN;
+            }
+        }
+        yellowLightTimer.stop();
+        trafficLightTimer.start();
+    }
+
+    // Method to update all traffic lights
+    private static void updateLights(GridDisplay display) {
+        for (TrafficLight light : trafficLights) {
+            display.updateLightCell(light);
+        }
     }
 }
