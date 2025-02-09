@@ -26,12 +26,12 @@ public class GridDisplay extends JFrame {
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
-                { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'S', 'R', 'R', 'R', 'R', 'S', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
+                { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' },
                 { 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' },
                 { 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' },
                 { 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' },
-                { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'S', 'R', 'R', 'R', 'R', 'S', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
+                { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
                 { 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'R', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O' },
@@ -73,23 +73,6 @@ public class GridDisplay extends JFrame {
                         gridCells[row][col] = roadLayeredPane; // Replace the previous label with the layered pane
                         gridPanel.add(roadLayeredPane); // Add layered pane to the grid panel
                         break;
-
-                    case 'S': // Stoplight
-                        JLayeredPane layeredLightPane = new JLayeredPane();
-                        layeredLightPane.setPreferredSize(new Dimension(40, 40)); // Set fixed size
-
-                        JLabel grassLabel = new JLabel(resizeImage("Assets/grass.png", 40, 40));
-                        grassLabel.setBounds(0, 0, 40, 40); // Set to full panel size
-
-                        JLabel lightLabel = new JLabel(resizeImage("Assets/redSL.png", 40, 40)); // Rotate 90 degrees
-                        lightLabel.setBounds(0, 0, 40, 40); // Align over grass
-
-                        // Add both labels to layeredPane
-                        layeredLightPane.add(grassLabel, Integer.valueOf(1)); // grass background
-                        layeredLightPane.add(lightLabel, Integer.valueOf(2)); // light foreground
-                        gridCells[row][col] = layeredLightPane;
-                        gridPanel.add(layeredLightPane); // Add layered pane instead of JLabel
-                        break;
                 }
             }
         }
@@ -130,6 +113,54 @@ public class GridDisplay extends JFrame {
         return new ImageIcon(img);
     }
 
+    public void updateLightCell(TrafficLight light){
+        gridPanel.remove(gridCells[light.getX()][light.getY()]);
+        // Create a new JLayeredPane based on the new state
+        JLayeredPane newLayeredPane = new JLayeredPane();
+        newLayeredPane.setPreferredSize(new Dimension(40, 40)); // Set fixed size for the cell
+
+        JLabel grassLabelForLight = new JLabel(resizeImage("Assets/grass.png", 40, 40));
+        grassLabelForLight.setBounds(0, 0, 40, 40);
+        String path = "";
+        switch (light.getColor()) {
+            case LightColor.RED:
+                path = "Assets/redSL.png";
+                break;
+            case LightColor.YELLOW:
+                path = "Assets/yellowSL.png";
+                break;
+            case LightColor.GREEN:
+                System.out.println("green");
+                path = "Assets/greenSL.png";
+                break;
+        }
+        int rotationAngle = 0;
+        switch (light.getFacingDirection()) {
+            case "N":
+                rotationAngle = 180;
+                break;
+            case "S":
+                rotationAngle = 0;
+                break;
+            case "E":
+                rotationAngle = 270;
+                break;
+            case "W":
+                rotationAngle = 90;
+                break;
+            default:
+                break;
+        }
+        JLabel lightLabel = new JLabel(resizeAndRotateImage(path, 40, 40, rotationAngle));
+        lightLabel.setBounds(0, 0, 40, 40);
+        newLayeredPane.add(grassLabelForLight, Integer.valueOf(1)); // grass background
+        newLayeredPane.add(lightLabel, Integer.valueOf(2));
+         // Replace the old cell with the new one in the grid panel
+         gridCells[light.getX()][light.getY()] = newLayeredPane;
+         gridPanel.add(newLayeredPane, light.getX() * COLS + light.getY()); // Re-add the new cell to the grid
+         gridPanel.revalidate();
+         gridPanel.repaint();
+    }
     // Method to update a car on grid
     public void updateCarCell(Car car, boolean removeCar) {
         // Remove the current cell from the grid
