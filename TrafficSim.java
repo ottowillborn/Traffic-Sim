@@ -31,9 +31,11 @@ public class TrafficSim {
         Car EBCar = new Car(11, 0, 1, "east");
         Car NBCar = new Car(19, 11, 1, "north");
         Car SBCar = new Car(0, 8, 1, "south");
+        Car WBCar = new Car(8, 19, 1, "west");
         cars.add(EBCar);
         cars.add(NBCar);
         cars.add(SBCar);
+        cars.add(WBCar);
         for (Car car : cars) {
             car.startCar();
             display.updateCarCell(car, false);
@@ -50,15 +52,19 @@ public class TrafficSim {
         System.out.println("Starting sim!");
 
         // Timer for cars
-        mainTimer = new Timer(1000, new ActionListener() {
+        mainTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Handle car movement
                 for (Car car : cars) {
                     if (car.isMoving()) {
-                        display.updateCarCell(car, true);
-                        car.move();
-                        display.updateCarCell(car, false);
+                        if (car.isAtIntersection()) {
+                            if (car.canProceed(trafficLights)) {
+                                updateCar(car, display);
+                            }
+                        } else {
+                            updateCar(car, display);
+                        }
                     }
                 }
             }
@@ -109,6 +115,14 @@ public class TrafficSim {
         }
         yellowLightTimer.stop();
         trafficLightTimer.start();
+    }
+
+    private static void updateCar(Car car, GridDisplay display) {
+        display.updateCarCell(car, true);
+        if (!car.willMoveOff()) {
+            car.move();
+            display.updateCarCell(car, false);
+        }
     }
 
     // Method to update all traffic lights

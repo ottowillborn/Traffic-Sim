@@ -97,28 +97,30 @@ public class Car {
                     return false;
                 }
             case "west":
-                x -= speed; // Move left
-                break;
+                if (this.y - speed < 0) {
+                    return true;
+                }else {
+                    return false;
+                }
         }
         return false;
     }
 
-    public boolean canProceed(int[][] intersection) {
+    public boolean canProceed(TrafficLight[] trafficLights) {
         switch (direction) {
             case "north":
-                return (intersection[12][7] == 'S') ?  false : true;
+                return (trafficLights[0].color == LightColor.RED) ?  false : true;
             case "south":
-                return (intersection[12][7] == 'S') ?  false : true;
+                return (trafficLights[2].color == LightColor.RED) ?  false : true;
             case "east":
-                return (intersection[12][12] == 'S') ?  false : true;
+                return (trafficLights[1].color == LightColor.RED) ?  false : true;
             case "west":
-                x -= speed; // Move left
-                break;
+                return (trafficLights[3].color == LightColor.RED) ?  false : true;
         }
         return true;
     }
 
-    public boolean isAtIntersection(int[][] intersection) {
+    public boolean isAtIntersection() {
         switch (direction) {
             case "north":
                 return (x==12 && y==11) ?  true : false;
@@ -127,8 +129,7 @@ public class Car {
             case "east":
                 return (x==11 && y==7) ?  true : false;
             case "west":
-                x -= speed; // Move left
-                break;
+                return (x==8 && y==12) ?  true : false;
         }
         return true;
     }

@@ -130,7 +130,6 @@ public class GridDisplay extends JFrame {
                 path = "Assets/yellowSL.png";
                 break;
             case LightColor.GREEN:
-                System.out.println("green");
                 path = "Assets/greenSL.png";
                 break;
         }
