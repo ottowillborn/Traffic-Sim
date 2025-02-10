@@ -256,6 +256,46 @@ public class Car {
         return "";
     }
 
+    public boolean willNotCollide(ArrayList<Car> cars){
+        switch (direction) {
+            case "east":
+                for (Car car : cars) {
+                    if (isInRange(car.x, 8, 9) && isInRange(car.y, 10, 13) && car != this) {
+                        return false;
+                    }
+                }
+                return true;
+            case "west":
+                for (Car car : cars) {
+                    if (isInRange(car.x, 10, 11) && isInRange(car.y, 7, 10) && car != this) {
+                        return false;
+                    }
+                }
+                return true;
+            case "north":
+                for (Car car : cars) {
+                    if (isInRange(car.y, 8, 9) && isInRange(car.x, 7, 10) && car != this) {
+                        return false;
+                    }
+                }
+                return true;
+            case "south":
+                for (Car car : cars) {
+                    if (isInRange(car.y, 10, 11) && isInRange(car.x, 9, 12) && car != this) {
+                        return false;
+                    }
+                }
+                return true;
+
+        }
+
+        return true;
+    }
+
+    public static boolean isInRange(int value, int min, int max) {
+        return value >= min && value <= max;
+    }
+
     public String getFinalLeftTurnDirection() {
         switch (direction) {
             case "northwest":

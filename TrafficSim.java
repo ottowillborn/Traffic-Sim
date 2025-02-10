@@ -32,22 +32,22 @@ public class TrafficSim {
         }
 
         //Init cars
-        //Car EBCar = new Car(11, 0, 1, "east", true, false, "Assets/whitecar.png");
-        Car EBCar2 = new Car(10, 0, 1, "east", false, true, "Assets/yellowcar.png");
-        //Car NBCar = new Car(19, 11, 1, "north", false, false, "Assets/bluecar.png");
-        Car WBCar = new Car(9, 19, 1, "west", false, true, "Assets/yellowcar.png");
+        //Car EBCar = new Car(11, 0, 1, "east", false, false, "Assets/whitecar.png");
+        //Car EBCar2 = new Car(10, 0, 1, "east", false, true, "Assets/yellowcar.png");
+        Car NBCar = new Car(19, 11, 1, "north", false, false, "Assets/bluecar.png");
+        //Car WBCar = new Car(9, 19, 1, "west", false, true, "Assets/yellowcar.png");
         //Car SBCar = new Car(0, 8, 1, "south", false, false, "Assets/bluecar.png");
         Car SBCar2 = new Car(0, 9, 1, "south", false, true, "Assets/yellowcar.png");
         //Car WBCar = new Car(8, 19, 1, "west", false, false, "Assets/bluecar.png");
-        Car NBCar2 = new Car(19, 10, 1, "north", false, true, "Assets/yellowcar.png");
+        //Car NBCar2 = new Car(19, 10, 1, "north", false, true, "Assets/yellowcar.png");
         //cars.add(EBCar);
-        cars.add(EBCar2);
-        //cars.add(NBCar);
+        //cars.add(EBCar2);
+        cars.add(NBCar);
         //cars.add(SBCar);
         cars.add(SBCar2);
-        cars.add(NBCar2);
+        //cars.add(NBCar2);
         //cars.add(WBCar);
-        cars.add(WBCar);
+        //cars.add(WBCar);
         for (Car car : cars) {
             car.startCar();
             display.updateCarCell(car, false);
@@ -164,17 +164,19 @@ public class TrafficSim {
                 }
                 if (car.wantsToTurnLeft() && (car.isInLeftTurnPosition() || car.isTurningLeft())) {
                     car.setIsTurningLeft(true);
-                    if (car.leftTurnComplete()){
-                        car.setDirection(car.getFinalLeftTurnDirection());
-                        display.updateCarCell(car, true);
-                        car.move();
-                        display.updateCarCell(car, false);
-                        car.setIsTurningLeft(false);
-                    } else {
-                        car.setDirection(car.getIntermediateLeftTurnDirection());
-                        display.updateCarCell(car, true);
-                        car.diagonalMove();
-                        display.updateCarCell(car, false);
+                    if (car.willNotCollide(cars)) {
+                        if (car.leftTurnComplete()){
+                            car.setDirection(car.getFinalLeftTurnDirection());
+                            display.updateCarCell(car, true);
+                            car.move();
+                            display.updateCarCell(car, false);
+                            car.setIsTurningLeft(false);
+                        } else {
+                            car.setDirection(car.getIntermediateLeftTurnDirection());
+                            display.updateCarCell(car, true);
+                            car.diagonalMove();
+                            display.updateCarCell(car, false);
+                        }
                     }
                 } else {
                     display.updateCarCell(car, true);
