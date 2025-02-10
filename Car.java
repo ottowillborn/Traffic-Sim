@@ -6,19 +6,31 @@ public class Car {
     private int speed; // speed of the car (could be in units per second)
     private String direction; // direction of the car ("north", "south", "east", "west")
     private boolean isMoving; // whether the car is moving or not
+    private boolean isTurningRight;
+    private String imagePath;
 
     // Constructor to initialize the car's properties
-    public Car(int x, int y, int speed, String direction) {
+    public Car(int x, int y, int speed, String direction, boolean isTurningRight, String imagePath) {
         this.x = x;
         this.y = y;
         this.speed = speed;
         this.direction = direction;
+        this.isTurningRight = isTurningRight;
+        this.imagePath = imagePath;
         this.isMoving = false; // Cars start off stopped
     }
 
     // Getters and setters for the car's attributes
     public int getX() {
         return x;
+    }
+
+    public boolean isTurningRight(){
+        return this.isTurningRight;
+    }
+
+    public String getImagePath(){
+        return this.imagePath;
     }
 
     public void setX(int x) {
@@ -160,16 +172,44 @@ public class Car {
         return true;
     }
 
+    public String getRightTurnDirection() {
+        switch (direction) {
+            case "north":
+                return "east";
+            case "south":
+                return "west";
+            case "east":
+                return "south";
+            case "west":
+                return "north";
+        }
+        return "";
+    }
+
+    public boolean isInRightTurnPosition() {
+        switch (direction) {
+            case "north":
+                return (x==11 && y==11) ?  true : false;
+            case "south":
+                return (x==8 && y==8) ?  true : false;
+            case "east":
+                return (x==11 && y==8) ?  true : false;
+            case "west":
+                return (x==8 && y==11) ?  true : false;
+        }
+        return true;
+    }
+
     public boolean isAtIntersection() {
         switch (direction) {
             case "north":
-                return (x==12 && y==11) ?  true : false;
+                return (x==12 && (y==11 || y == 10)) ?  true : false;
             case "south":
-                return (x==7 && y==8) ?  true : false;
+                return (x==7 && (y==8 || y == 9)) ?  true : false;
             case "east":
-                return (x==11 && y==7) ?  true : false;
+                return ((x==11 || x == 10) && y==7) ?  true : false;
             case "west":
-                return (x==8 && y==12) ?  true : false;
+                return ((x==8 || x == 9) && y==12) ?  true : false;
         }
         return true;
     }

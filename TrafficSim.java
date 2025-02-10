@@ -31,17 +31,17 @@ public class TrafficSim {
             display.updateLightCell(light);
         }
 
-        // Init cars
-        Car EBCar = new Car(11, 0, 1, "east");
-        Car NBCar = new Car(19, 11, 1, "north");
-        Car SBCar = new Car(0, 8, 1, "south");
-        Car WBCar = new Car(8, 19, 1, "west");
-        Car WBCar2 = new Car(8, 16, 1, "west");
+        //Init cars
+        Car EBCar = new Car(11, 0, 1, "east", true, "Assets/whitecar.png");
+        Car EBCar2 = new Car(10, 0, 1, "east", false, "Assets/bluecar.png");
+        Car NBCar = new Car(19, 11, 1, "north", false, "Assets/bluecar.png");
+        Car SBCar = new Car(0, 8, 1, "south", false, "Assets/bluecar.png");
+        Car WBCar = new Car(8, 19, 1, "west", false, "Assets/bluecar.png");
         cars.add(EBCar);
+        cars.add(EBCar2);
         cars.add(NBCar);
         cars.add(SBCar);
         cars.add(WBCar);
-        cars.add(WBCar2);
         for (Car car : cars) {
             car.startCar();
             display.updateCarCell(car, false);
@@ -153,6 +153,9 @@ public class TrafficSim {
     private static void updateCar(Car car, GridDisplay display, Iterator<Car> iterator) {
         if (!car.willMoveOff()) {
             if (car.isMoving()) {
+                if (car.isTurningRight() && car.isInRightTurnPosition()) {
+                    car.setDirection(car.getRightTurnDirection());
+                }
                 display.updateCarCell(car, true);
                 car.move();
                 display.updateCarCell(car, false);
@@ -196,8 +199,9 @@ public class TrafficSim {
                 y = 19;
                 break;       
         }
+        boolean wantsToTurnRight = (rand.nextDouble() < 0.5) ? true : false;
         System.out.println(randomDirection);
-        Car randCar = new Car(x, y, 1, randomDirection);
+        Car randCar = new Car(x, y, 1, randomDirection, wantsToTurnRight, wantsToTurnRight ? "Assets/whitecar.png" : "Assets/bluecar.png");
         return randCar;
     }
 }

@@ -189,7 +189,7 @@ public class GridDisplay extends JFrame {
             default:
                 break;
         }
-        JLabel carLabel = new JLabel(resizeAndRotateImage("Assets/bluecar.png", 40, 40, rotationAngle)); // Rotate car
+        JLabel carLabel = new JLabel(resizeAndRotateImage(car.getImagePath(), 40, 40, rotationAngle)); // Rotate car
         // image
         carLabel.setBounds(0, 0, 40, 40);
         newLayeredPane.add(roadLabelForCar, Integer.valueOf(1)); // Road background
