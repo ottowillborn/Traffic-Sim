@@ -58,6 +58,10 @@ public class Car {
         return this.wantsToTurnLeft;
     }
 
+    public void setWantsToTurnLeft(boolean b) {
+        this.wantsToTurnLeft = b;
+    }
+
     public boolean isTurningLeft(){
         return this.isTurningLeft;
     }

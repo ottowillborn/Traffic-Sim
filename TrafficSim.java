@@ -31,7 +31,7 @@ public class TrafficSim {
             display.updateLightCell(light);
         }
         /*BUGS
-         - stacked left turns
+         - stacked turning signals
          - right on red
          */
         //Init cars
@@ -74,7 +74,7 @@ public class TrafficSim {
                 Iterator<Car> iterator = cars.iterator();
                 while (iterator.hasNext()) {
                     Car car = iterator.next();
-                    if (car.wantsToTurnRight()) {
+                    if (car.wantsToTurnRight() || car.wantsToTurnLeft()) {
                         if (car.getSignalOn()){
                             car.setSignalOn(false);
                         }else{
@@ -187,6 +187,7 @@ public class TrafficSim {
                             car.move();
                             display.updateCarCell(car, false);
                             car.setIsTurningLeft(false);
+                            car.setWantsToTurnLeft(false);
                         } else {
                             car.setDirection(car.getIntermediateLeftTurnDirection());
                             display.updateCarCell(car, true);
@@ -297,7 +298,7 @@ public class TrafficSim {
             wantsToTurnRight, 
             wantsToTurnLeft,
             imagePath,
-            "Assets/yellowcarblinking.png"
+            blinkingImagePath
             );
         return randCar;
     }
