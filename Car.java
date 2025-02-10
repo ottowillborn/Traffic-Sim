@@ -149,13 +149,13 @@ public class Car {
     public boolean canProceed(TrafficLight[] trafficLights) {
         switch (direction) {
             case "north":
-                return (trafficLights[0].color == LightColor.RED) ?  false : true;
+                return (trafficLights[0].color != LightColor.GREEN) ?  false : true;
             case "south":
-                return (trafficLights[2].color == LightColor.RED) ?  false : true;
+                return (trafficLights[2].color != LightColor.GREEN) ?  false : true;
             case "east":
-                return (trafficLights[1].color == LightColor.RED) ?  false : true;
+                return (trafficLights[1].color != LightColor.GREEN) ?  false : true;
             case "west":
-                return (trafficLights[3].color == LightColor.RED) ?  false : true;
+                return (trafficLights[3].color != LightColor.GREEN) ?  false : true;
         }
         return true;
     }

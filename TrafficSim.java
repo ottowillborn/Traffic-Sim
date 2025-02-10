@@ -12,6 +12,7 @@ public class TrafficSim {
     private static Timer newCarTimer;
     static ArrayList<Car> cars = new ArrayList<>();
     static TrafficLight[] trafficLights = new TrafficLight[4];
+    private static Random rand = new Random();
 
     public static void main(String[] args) {
         GridDisplay display = new GridDisplay();
@@ -47,7 +48,7 @@ public class TrafficSim {
         }
         // Wait for start button to be pressed
         while (!display.simRunning) {
-            System.out.println("!");
+            System.out.println("");
         }
         startSimulation(display);
     }
@@ -64,24 +65,27 @@ public class TrafficSim {
                 Iterator<Car> iterator = cars.iterator();
                 while (iterator.hasNext()) {
                     Car car = iterator.next();
-                    if (car.isMoving()) {
-                        if (car.isAtIntersection()) {
-                            if (car.canProceed(trafficLights)) {
-                                updateCar(car, display, iterator);
-                            }
+                    if (car.isAtIntersection() && !car.isCarInFront(cars)) {
+                        if (car.canProceed(trafficLights)) {
+                            updateCar(car, display, iterator);
+                            car.startCar();
                         } else {
-                            if (!car.isCarInFront(cars)){
-                                updateCar(car, display, iterator);
-                            }
-                            
+                            car.stopCar();
                         }
-                    }
+                    } else {
+                        if (!car.isCarInFront(cars)){
+                            updateCar(car, display, iterator);
+                            car.startCar();
+                        } else {
+                            car.stopCar();
+                        }        
+                    }                   
                 }
             }
         });
 
         // Timer for traffic Lights
-        trafficLightTimer = new Timer(8000, new ActionListener() {
+        trafficLightTimer = new Timer(16000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 switchToYellow();
@@ -99,17 +103,23 @@ public class TrafficSim {
         });
 
         // Timer for adding random car
-        newCarTimer = new Timer(5000, new ActionListener() {
+        int randomDelay = rand.nextInt(2000) + 2000;
+        newCarTimer = new Timer(randomDelay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Car randomCar = generateRandomCar();
                 randomCar.startCar();
                 cars.add(randomCar);
+
+                // Set random delay and restart
+                newCarTimer.setInitialDelay(rand.nextInt(2000) + 2000);
+                newCarTimer.restart();
             }
         });
 
 
         // Start the timers
+        newCarTimer.setRepeats(false);
         newCarTimer.start();
         trafficLightTimer.start();
         mainTimer.start();
@@ -141,11 +151,15 @@ public class TrafficSim {
 
     // Method to update car on display and remove ones that move off
     private static void updateCar(Car car, GridDisplay display, Iterator<Car> iterator) {
-        display.updateCarCell(car, true);
         if (!car.willMoveOff()) {
-            car.move();
-            display.updateCarCell(car, false);
+            if (car.isMoving()) {
+                display.updateCarCell(car, true);
+                car.move();
+                display.updateCarCell(car, false);
+            }
+            
         }else {
+            display.updateCarCell(car, true);
             iterator.remove();
         }
     }
