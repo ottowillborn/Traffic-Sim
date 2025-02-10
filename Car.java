@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Car {
     private int x; // x position of the car on the grid
     private int y; // y position of the car on the grid
@@ -75,6 +77,44 @@ public class Car {
         }
     }
 
+    public boolean isCarInFront(ArrayList<Car> cars){
+        
+        switch (this.direction) {
+            case "north":
+                for (Car car : cars) {
+                    if (car.x == this.x - 1 && car.y == this.y){
+                        return true;
+                    }
+                }
+                return false;
+                    
+            case "south":
+                for (Car car : cars) {
+                    if (car.x == this.x + 1 && car.y == this.y){
+                        return true;
+                    }
+                }
+                return false;
+                              
+            case "east":
+                for (Car car : cars) {
+                    if (car.y == this.y + 1 && car.x == this.x){
+                        return true;
+                    }
+                }
+                return false;
+                
+            case "west":
+                for (Car car : cars) {
+                    if (car.y == this.y - 1 && car.x == this.x){
+                        return true;
+                    }
+                }
+                return false;
+        }
+        return false;
+    }
+
     public boolean willMoveOff() {
         switch (direction) {
             case "north":
@@ -148,6 +188,12 @@ public class Car {
     @Override
     public String toString() {
         return "Car at (" + x + ", " + y + ") moving " + direction + " at speed " + speed + " units/sec.";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        else return false;
     }
 }
 

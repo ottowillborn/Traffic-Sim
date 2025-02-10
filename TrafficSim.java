@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TrafficSim {
     private static Timer mainTimer;
@@ -32,10 +33,12 @@ public class TrafficSim {
         Car NBCar = new Car(19, 11, 1, "north");
         Car SBCar = new Car(0, 8, 1, "south");
         Car WBCar = new Car(8, 19, 1, "west");
+        Car WBCar2 = new Car(8, 16, 1, "west");
         cars.add(EBCar);
         cars.add(NBCar);
         cars.add(SBCar);
         cars.add(WBCar);
+        cars.add(WBCar2);
         for (Car car : cars) {
             car.startCar();
             display.updateCarCell(car, false);
@@ -56,14 +59,19 @@ public class TrafficSim {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Handle car movement
-                for (Car car : cars) {
+                Iterator<Car> iterator = cars.iterator();
+                while (iterator.hasNext()) {
+                    Car car = iterator.next();
                     if (car.isMoving()) {
                         if (car.isAtIntersection()) {
                             if (car.canProceed(trafficLights)) {
-                                updateCar(car, display);
+                                updateCar(car, display, iterator);
                             }
                         } else {
-                            updateCar(car, display);
+                            if (!car.isCarInFront(cars)){
+                                updateCar(car, display, iterator);
+                            }
+                            
                         }
                     }
                 }
@@ -117,11 +125,14 @@ public class TrafficSim {
         trafficLightTimer.start();
     }
 
-    private static void updateCar(Car car, GridDisplay display) {
+    // Method to update car on display and remove ones that move off
+    private static void updateCar(Car car, GridDisplay display, Iterator<Car> iterator) {
         display.updateCarCell(car, true);
         if (!car.willMoveOff()) {
             car.move();
             display.updateCarCell(car, false);
+        }else {
+            iterator.remove();
         }
     }
 
