@@ -45,14 +45,46 @@ public class Car {
     public void setSignalOn(boolean b) {
         this.signalOn = b;
     }
-    public void setWantsToTurnRight(boolean b) {
-        this.wantsToTurnRight = b;
-    }
+
+    /*--------------------- Right Turn Methods ---------------------*/
 
     public boolean wantsToTurnRight(){
         return this.wantsToTurnRight;
     }
 
+    public void setWantsToTurnRight(boolean b) {
+        this.wantsToTurnRight = b;
+    }
+
+    public String getRightTurnDirection() {
+        switch (direction) {
+            case "north":
+                return "east";
+            case "south":
+                return "west";
+            case "east":
+                return "south";
+            case "west":
+                return "north";
+        }
+        return "";
+    }
+
+    public boolean isInRightTurnPosition() {
+        switch (direction) {
+            case "north":
+                return (x==11 && y==11) ?  true : false;
+            case "south":
+                return (x==8 && y==8) ?  true : false;
+            case "east":
+                return (x==11 && y==8) ?  true : false;
+            case "west":
+                return (x==8 && y==11) ?  true : false;
+        }
+        return true;
+    }
+
+    /*--------------------- Left Turn Methods ---------------------*/
 
     public boolean wantsToTurnLeft(){
         return this.wantsToTurnLeft;
@@ -68,6 +100,71 @@ public class Car {
 
     public void setIsTurningLeft(boolean b){
         this.isTurningLeft = b;
+    }
+
+    public boolean leftTurnComplete() {
+        switch (direction) {
+            case "north":
+                return x == 9  ?  true : false;
+            case "northwest":
+                return x == 9 ?  true : false;
+            case "south":
+                return x == 10 ?  true : false;
+            case "southeast":
+                return x == 10 ?  true : false;
+            case "east":
+                return y == 10 ?  true : false;
+            case "northeast":
+                return y == 10 ?  true : false;
+            case "west":
+                return y == 9 ?  true : false;
+            case "southwest":
+                return y == 9 ?  true : false;
+        }
+        return true;
+    }
+
+    public String getFinalLeftTurnDirection() {
+        switch (direction) {
+            case "northwest":
+                return "west";
+            case "southwest":
+                return "south";
+            case "northeast":
+                return "north";
+            case "southeast":
+                return "east";
+        }
+        return "";
+    }
+
+    public String getIntermediateLeftTurnDirection() {
+        switch (direction) {
+            case "north"://
+                return "northwest";
+            case "south":
+                return "southeast";
+            case "east"://
+                return "northeast";
+            case "west"://
+                return "southwest";
+            default:
+                return this.direction;
+        }
+    }
+
+    public boolean isInLeftTurnPosition() {
+        switch (direction) {
+            case "north":
+                return (x==11 && y==10) ?  true : false;
+            case "south":
+                return (x==8 && y==9) ?  true : false;
+            case "east":
+                return (x==10 && y==8) ?  true : false;
+            case "west":
+                return (x==9 && y==11) ?  true : false;
+        }
+        return true;
     }
 
 
@@ -130,28 +227,6 @@ public class Car {
                     break;
             }
         }
-    }
-
-    public boolean leftTurnComplete() {
-        switch (direction) {
-            case "north":
-                return x == 9  ?  true : false;
-            case "northwest":
-                return x == 9 ?  true : false;
-            case "south":
-                return x == 10 ?  true : false;
-            case "southeast":
-                return x == 10 ?  true : false;
-            case "east":
-                return y == 10 ?  true : false;
-            case "northeast":
-                return y == 10 ?  true : false;
-            case "west":
-                return y == 9 ?  true : false;
-            case "southwest":
-                return y == 9 ?  true : false;
-        }
-        return true;
     }
 
     public void diagonalMove() {
@@ -260,19 +335,6 @@ public class Car {
         return true;
     }
 
-    public String getRightTurnDirection() {
-        switch (direction) {
-            case "north":
-                return "east";
-            case "south":
-                return "west";
-            case "east":
-                return "south";
-            case "west":
-                return "north";
-        }
-        return "";
-    }
 
     public boolean willNotCollide(ArrayList<Car> cars){
         switch (direction) {
@@ -312,63 +374,6 @@ public class Car {
 
     public static boolean isInRange(int value, int min, int max) {
         return value >= min && value <= max;
-    }
-
-    public String getFinalLeftTurnDirection() {
-        switch (direction) {
-            case "northwest":
-                return "west";
-            case "southwest":
-                return "south";
-            case "northeast":
-                return "north";
-            case "southeast":
-                return "east";
-        }
-        return "";
-    }
-
-    public String getIntermediateLeftTurnDirection() {
-        switch (direction) {
-            case "north"://
-                return "northwest";
-            case "south":
-                return "southeast";
-            case "east"://
-                return "northeast";
-            case "west"://
-                return "southwest";
-            default:
-                return this.direction;
-        }
-    }
-
-    public boolean isInRightTurnPosition() {
-        switch (direction) {
-            case "north":
-                return (x==11 && y==11) ?  true : false;
-            case "south":
-                return (x==8 && y==8) ?  true : false;
-            case "east":
-                return (x==11 && y==8) ?  true : false;
-            case "west":
-                return (x==8 && y==11) ?  true : false;
-        }
-        return true;
-    }
-
-    public boolean isInLeftTurnPosition() {
-        switch (direction) {
-            case "north":
-                return (x==11 && y==10) ?  true : false;
-            case "south":
-                return (x==8 && y==9) ?  true : false;
-            case "east":
-                return (x==10 && y==8) ?  true : false;
-            case "west":
-                return (x==9 && y==11) ?  true : false;
-        }
-        return true;
     }
 
     public boolean isAtIntersection() {
