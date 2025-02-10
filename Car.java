@@ -260,28 +260,28 @@ public class Car {
         switch (direction) {
             case "east":
                 for (Car car : cars) {
-                    if (isInRange(car.x, 8, 9) && isInRange(car.y, 10, 13) && car != this) {
+                    if (isInRange(car.x, 8, 9) && isInRange(car.y, 10, 13) && car != this && !car.isTurningLeft()) {
                         return false;
                     }
                 }
                 return true;
             case "west":
                 for (Car car : cars) {
-                    if (isInRange(car.x, 10, 11) && isInRange(car.y, 7, 10) && car != this) {
+                    if (isInRange(car.x, 10, 11) && isInRange(car.y, 7, 10) && car != this && !car.isTurningLeft()) {
                         return false;
                     }
                 }
                 return true;
             case "north":
                 for (Car car : cars) {
-                    if (isInRange(car.y, 8, 9) && isInRange(car.x, 7, 10) && car != this) {
+                    if (isInRange(car.y, 8, 9) && isInRange(car.x, 7, 10) && car != this && !car.isTurningLeft()) {
                         return false;
                     }
                 }
                 return true;
             case "south":
                 for (Car car : cars) {
-                    if (isInRange(car.y, 10, 11) && isInRange(car.x, 9, 12) && car != this) {
+                    if (isInRange(car.y, 10, 11) && isInRange(car.x, 9, 12) && car != this && !car.isTurningLeft()) {
                         return false;
                     }
                 }

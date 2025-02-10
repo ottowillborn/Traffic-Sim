@@ -30,21 +30,24 @@ public class TrafficSim {
         for (TrafficLight light : trafficLights) {
             display.updateLightCell(light);
         }
-
+        /*BUGS
+         - stacked left turns
+         - right on red
+         */
         //Init cars
         //Car EBCar = new Car(11, 0, 1, "east", false, false, "Assets/whitecar.png");
         //Car EBCar2 = new Car(10, 0, 1, "east", false, true, "Assets/yellowcar.png");
-        Car NBCar = new Car(19, 11, 1, "north", false, false, "Assets/bluecar.png");
+        //Car NBCar = new Car(19, 11, 1, "north", false, false, "Assets/bluecar.png");
         //Car WBCar = new Car(9, 19, 1, "west", false, true, "Assets/yellowcar.png");
         //Car SBCar = new Car(0, 8, 1, "south", false, false, "Assets/bluecar.png");
-        Car SBCar2 = new Car(0, 9, 1, "south", false, true, "Assets/yellowcar.png");
+        //Car SBCar2 = new Car(0, 9, 1, "south", false, true, "Assets/yellowcar.png");
         //Car WBCar = new Car(8, 19, 1, "west", false, false, "Assets/bluecar.png");
         //Car NBCar2 = new Car(19, 10, 1, "north", false, true, "Assets/yellowcar.png");
         //cars.add(EBCar);
         //cars.add(EBCar2);
-        cars.add(NBCar);
+        //cars.add(NBCar);
         //cars.add(SBCar);
-        cars.add(SBCar2);
+        //cars.add(SBCar2);
         //cars.add(NBCar2);
         //cars.add(WBCar);
         //cars.add(WBCar);
@@ -126,7 +129,7 @@ public class TrafficSim {
 
         // Start the timers
         newCarTimer.setRepeats(false);
-        //newCarTimer.start();
+        newCarTimer.start();
         trafficLightTimer.start();
         mainTimer.start();
     }
@@ -203,28 +206,69 @@ public class TrafficSim {
         Random rand = new Random();
         // Randomly select a direction
         String[] directions = {"north", "south", "east", "west"};
+        String[] turns = {"turnLeft", "turnRight", "straight"};
         String randomDirection = directions[rand.nextInt(directions.length)];
+        String randomTurn = turns[rand.nextInt(turns.length)];
         int x = 0;
         int y = 0;
         switch (randomDirection) {
             case "north":
                 x = 19;
-                y = 11;
+                if(randomTurn == "turnLeft"){
+                    y = 10;
+                } else if (randomTurn == "turnRight") {
+                    y = 11;
+                } else {
+                    y = (rand.nextDouble() < 0.5) ? 10 : 11;
+                }
                 break;
             case "south":
                 x = 0;
-                y = 8;
+                if(randomTurn == "turnLeft"){
+                    y = 9;
+                } else if (randomTurn == "turnRight") {
+                    y = 8;
+                } else {
+                    y = (rand.nextDouble() < 0.5) ? 8 : 9;
+                }
                 break;
             case "east":
-                x = 11;
+                if(randomTurn == "turnLeft"){
+                    x = 10;
+                } else if (randomTurn == "turnRight") {
+                    x = 11;
+                } else {
+                    x = (rand.nextDouble() < 0.5) ? 10 : 11;
+                }
                 y = 0;
                 break;
             case "west":
-                x = 8;
+                if(randomTurn == "turnLeft"){
+                    x = 9;
+                } else if (randomTurn == "turnRight") {
+                    x = 8;
+                } else {
+                    x = (rand.nextDouble() < 0.5) ? 8 : 9;
+                }
                 y = 19;
                 break;       
         }
-        boolean wantsToTurnRight = (rand.nextDouble() < 0.5) ? true : false;
+        boolean wantsToTurnLeft=false;
+        boolean wantsToTurnRight=false;
+        String imagePath="";
+        if(randomTurn == "turnLeft"){
+            wantsToTurnLeft = true;
+            wantsToTurnRight = false;
+            imagePath = "Assets/whitecar.png";
+        } else if (randomTurn == "turnRight") {
+            wantsToTurnLeft = false;
+            wantsToTurnRight = true;
+            imagePath = "Assets/yellowcar.png";
+        } else {
+            wantsToTurnLeft = false;
+            wantsToTurnRight = false;
+            imagePath = "Assets/bluecar.png";
+        }
         System.out.println(randomDirection);
         Car randCar = new Car(
             x, 
@@ -232,8 +276,8 @@ public class TrafficSim {
             1, 
             randomDirection, 
             wantsToTurnRight, 
-            false,
-            wantsToTurnRight ? "Assets/whitecar.png" : "Assets/bluecar.png"
+            wantsToTurnLeft,
+            imagePath
             );
         return randCar;
     }
