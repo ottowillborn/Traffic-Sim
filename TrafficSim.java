@@ -32,15 +32,21 @@ public class TrafficSim {
         }
 
         //Init cars
-        Car EBCar = new Car(11, 0, 1, "east", true, "Assets/whitecar.png");
-        Car EBCar2 = new Car(10, 0, 1, "east", false, "Assets/bluecar.png");
-        Car NBCar = new Car(19, 11, 1, "north", false, "Assets/bluecar.png");
-        Car SBCar = new Car(0, 8, 1, "south", false, "Assets/bluecar.png");
-        Car WBCar = new Car(8, 19, 1, "west", false, "Assets/bluecar.png");
-        cars.add(EBCar);
+        //Car EBCar = new Car(11, 0, 1, "east", true, false, "Assets/whitecar.png");
+        Car EBCar2 = new Car(10, 0, 1, "east", false, true, "Assets/yellowcar.png");
+        //Car NBCar = new Car(19, 11, 1, "north", false, false, "Assets/bluecar.png");
+        Car WBCar = new Car(9, 19, 1, "west", false, true, "Assets/yellowcar.png");
+        //Car SBCar = new Car(0, 8, 1, "south", false, false, "Assets/bluecar.png");
+        Car SBCar2 = new Car(0, 9, 1, "south", false, true, "Assets/yellowcar.png");
+        //Car WBCar = new Car(8, 19, 1, "west", false, false, "Assets/bluecar.png");
+        Car NBCar2 = new Car(19, 10, 1, "north", false, true, "Assets/yellowcar.png");
+        //cars.add(EBCar);
         cars.add(EBCar2);
-        cars.add(NBCar);
-        cars.add(SBCar);
+        //cars.add(NBCar);
+        //cars.add(SBCar);
+        cars.add(SBCar2);
+        cars.add(NBCar2);
+        //cars.add(WBCar);
         cars.add(WBCar);
         for (Car car : cars) {
             car.startCar();
@@ -85,7 +91,7 @@ public class TrafficSim {
         });
 
         // Timer for traffic Lights
-        trafficLightTimer = new Timer(16000, new ActionListener() {
+        trafficLightTimer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 switchToYellow();
@@ -120,7 +126,7 @@ public class TrafficSim {
 
         // Start the timers
         newCarTimer.setRepeats(false);
-        newCarTimer.start();
+        //newCarTimer.start();
         trafficLightTimer.start();
         mainTimer.start();
     }
@@ -153,12 +159,29 @@ public class TrafficSim {
     private static void updateCar(Car car, GridDisplay display, Iterator<Car> iterator) {
         if (!car.willMoveOff()) {
             if (car.isMoving()) {
-                if (car.isTurningRight() && car.isInRightTurnPosition()) {
+                if (car.wantsToTurnRight() && car.isInRightTurnPosition()) {
                     car.setDirection(car.getRightTurnDirection());
                 }
-                display.updateCarCell(car, true);
-                car.move();
-                display.updateCarCell(car, false);
+                if (car.wantsToTurnLeft() && (car.isInLeftTurnPosition() || car.isTurningLeft())) {
+                    car.setIsTurningLeft(true);
+                    if (car.leftTurnComplete()){
+                        car.setDirection(car.getFinalLeftTurnDirection());
+                        display.updateCarCell(car, true);
+                        car.move();
+                        display.updateCarCell(car, false);
+                        car.setIsTurningLeft(false);
+                    } else {
+                        car.setDirection(car.getIntermediateLeftTurnDirection());
+                        display.updateCarCell(car, true);
+                        car.diagonalMove();
+                        display.updateCarCell(car, false);
+                    }
+                } else {
+                    display.updateCarCell(car, true);
+                    car.move();
+                    display.updateCarCell(car, false);
+                }
+                
             }
             
         }else {
@@ -201,7 +224,15 @@ public class TrafficSim {
         }
         boolean wantsToTurnRight = (rand.nextDouble() < 0.5) ? true : false;
         System.out.println(randomDirection);
-        Car randCar = new Car(x, y, 1, randomDirection, wantsToTurnRight, wantsToTurnRight ? "Assets/whitecar.png" : "Assets/bluecar.png");
+        Car randCar = new Car(
+            x, 
+            y, 
+            1, 
+            randomDirection, 
+            wantsToTurnRight, 
+            false,
+            wantsToTurnRight ? "Assets/whitecar.png" : "Assets/bluecar.png"
+            );
         return randCar;
     }
 }

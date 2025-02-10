@@ -186,6 +186,18 @@ public class GridDisplay extends JFrame {
             case "west":
                 rotationAngle = 0;
                 break;
+            case "northeast":
+                rotationAngle = 135;
+                break;
+            case "southwest":
+                rotationAngle = 315;
+                break;
+            case "southeast":
+                rotationAngle = 225;
+                break;
+            case "northwest":
+                rotationAngle = 45;
+                break;
             default:
                 break;
         }
