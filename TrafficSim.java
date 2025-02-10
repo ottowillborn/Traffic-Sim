@@ -74,12 +74,22 @@ public class TrafficSim {
                 Iterator<Car> iterator = cars.iterator();
                 while (iterator.hasNext()) {
                     Car car = iterator.next();
+                    if (car.wantsToTurnRight()) {
+                        if (car.getSignalOn()){
+                            car.setSignalOn(false);
+                        }else{
+                            car.setSignalOn(true);
+                        }
+                    }else {
+                        car.setSignalOn(false);
+                    }
                     if (car.isAtIntersection() && !car.isCarInFront(cars)) {
                         if (car.canProceed(trafficLights)) {
                             updateCar(car, display, iterator);
                             car.startCar();
                         } else {
                             car.stopCar();
+                            updateCar(car, display, iterator);
                         }
                     } else {
                         if (!car.isCarInFront(cars)){
@@ -161,9 +171,12 @@ public class TrafficSim {
     // Method to update car on display and remove ones that move off
     private static void updateCar(Car car, GridDisplay display, Iterator<Car> iterator) {
         if (!car.willMoveOff()) {
+            
+            
             if (car.isMoving()) {
                 if (car.wantsToTurnRight() && car.isInRightTurnPosition()) {
                     car.setDirection(car.getRightTurnDirection());
+                    car.setWantsToTurnRight(false);
                 }
                 if (car.wantsToTurnLeft() && (car.isInLeftTurnPosition() || car.isTurningLeft())) {
                     car.setIsTurningLeft(true);
@@ -187,6 +200,8 @@ public class TrafficSim {
                     display.updateCarCell(car, false);
                 }
                 
+            }else{
+                display.updateCarCell(car, false);
             }
             
         }else {
@@ -256,18 +271,22 @@ public class TrafficSim {
         boolean wantsToTurnLeft=false;
         boolean wantsToTurnRight=false;
         String imagePath="";
+        String blinkingImagePath = "";
         if(randomTurn == "turnLeft"){
             wantsToTurnLeft = true;
             wantsToTurnRight = false;
             imagePath = "Assets/whitecar.png";
+            blinkingImagePath = "Assets/whitecarblinking.png";
         } else if (randomTurn == "turnRight") {
             wantsToTurnLeft = false;
             wantsToTurnRight = true;
             imagePath = "Assets/yellowcar.png";
+            blinkingImagePath = "Assets/yellowcarblinking.png";
         } else {
             wantsToTurnLeft = false;
             wantsToTurnRight = false;
             imagePath = "Assets/bluecar.png";
+            blinkingImagePath = "Assets/bluecar.png";
         }
         System.out.println(randomDirection);
         Car randCar = new Car(
@@ -277,7 +296,8 @@ public class TrafficSim {
             randomDirection, 
             wantsToTurnRight, 
             wantsToTurnLeft,
-            imagePath
+            imagePath,
+            "Assets/yellowcarblinking.png"
             );
         return randCar;
     }

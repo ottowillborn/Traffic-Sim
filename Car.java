@@ -9,8 +9,10 @@ public class Car {
     private boolean wantsToTurnRight;
     private boolean wantsToTurnLeft;
     private boolean isTurningLeft;
+    private boolean signalOn;
 
     private String imagePath;
+    private String blinkingImagePath;
 
     // Constructor to initialize the car's properties
     public Car(
@@ -20,7 +22,8 @@ public class Car {
         String direction, 
         boolean wantsToTurnRight, 
         boolean wantsToTurnLeft,
-        String imagePath) {
+        String imagePath,
+        String blinkingImagePath) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -28,6 +31,7 @@ public class Car {
         this.wantsToTurnRight = wantsToTurnRight;
         this.wantsToTurnLeft = wantsToTurnLeft;
         this.imagePath = imagePath;
+        this.blinkingImagePath = blinkingImagePath;
         this.isMoving = false; // Cars start off stopped
     }
 
@@ -35,10 +39,20 @@ public class Car {
     public int getX() {
         return x;
     }
+    public boolean getSignalOn() {
+        return this.signalOn;
+    }
+    public void setSignalOn(boolean b) {
+        this.signalOn = b;
+    }
+    public void setWantsToTurnRight(boolean b) {
+        this.wantsToTurnRight = b;
+    }
 
     public boolean wantsToTurnRight(){
         return this.wantsToTurnRight;
     }
+
 
     public boolean wantsToTurnLeft(){
         return this.wantsToTurnLeft;
@@ -55,7 +69,7 @@ public class Car {
 
 
     public String getImagePath(){
-        return this.imagePath;
+        return signalOn ? this.blinkingImagePath : this.imagePath;
     }
 
     public void setX(int x) {
