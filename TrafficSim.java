@@ -3,11 +3,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class TrafficSim {
     private static Timer mainTimer;
     private static Timer trafficLightTimer;
     private static Timer yellowLightTimer;
+    private static Timer newCarTimer;
     static ArrayList<Car> cars = new ArrayList<>();
     static TrafficLight[] trafficLights = new TrafficLight[4];
 
@@ -96,7 +98,19 @@ public class TrafficSim {
             }
         });
 
+        // Timer for adding random car
+        newCarTimer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Car randomCar = generateRandomCar();
+                randomCar.startCar();
+                cars.add(randomCar);
+            }
+        });
+
+
         // Start the timers
+        newCarTimer.start();
         trafficLightTimer.start();
         mainTimer.start();
     }
@@ -141,5 +155,35 @@ public class TrafficSim {
         for (TrafficLight light : trafficLights) {
             display.updateLightCell(light);
         }
+    }
+
+    public static Car generateRandomCar() {
+        Random rand = new Random();
+        // Randomly select a direction
+        String[] directions = {"north", "south", "east", "west"};
+        String randomDirection = directions[rand.nextInt(directions.length)];
+        int x = 0;
+        int y = 0;
+        switch (randomDirection) {
+            case "north":
+                x = 19;
+                y = 11;
+                break;
+            case "south":
+                x = 0;
+                y = 8;
+                break;
+            case "east":
+                x = 11;
+                y = 0;
+                break;
+            case "west":
+                x = 8;
+                y = 19;
+                break;       
+        }
+        System.out.println(randomDirection);
+        Car randCar = new Car(x, y, 1, randomDirection);
+        return randCar;
     }
 }
